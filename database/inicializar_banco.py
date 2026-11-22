@@ -21,18 +21,17 @@ os.makedirs(
 
 
 # =====================================================
-# PRODUTOS INICIAIS
+# CATÁLOGO ATUAL DA TOQUE DE AMOR
 # =====================================================
 
 PRODUTOS_INICIAIS = [
 
-    ("Forminhas Acetato (50 un)", "Forminhas", 5.80, "Pacote"),
-    ("Forminhas Acetato (1 un)", "Forminhas", 0.12, "Unidade"),
+    ("Forminhas Acetato (50 un)", "Forminhas", 6.00, "Pacote"),
+    ("Forminhas Acetato (1 un)", "Forminhas", 0.15, "Unidade"),
 
     ("Tradicional - Ninho", "Tradicional", 1.30, "Unidade"),
     ("Tradicional - Brigadeiro", "Tradicional", 1.30, "Unidade"),
     ("Tradicional - Beijinho", "Tradicional", 1.30, "Unidade"),
-    ("Tradicional - Coco Queimado", "Tradicional", 1.30, "Unidade"),
     ("Tradicional - Nesquik", "Tradicional", 1.30, "Unidade"),
     ("Tradicional - Paçoca", "Tradicional", 1.30, "Unidade"),
 
@@ -40,25 +39,32 @@ PRODUTOS_INICIAIS = [
     ("Especiais - Churros", "Especiais", 1.40, "Unidade"),
     ("Especiais - Cappuccino", "Especiais", 1.40, "Unidade"),
     ("Especiais - Cajuzinho", "Especiais", 1.40, "Unidade"),
+    ("Especiais - Coco Queimado", "Especiais", 1.40, "Unidade"),
+    ("Especiais - Ninho Colorido", "Especiais", 1.40, "Unidade"),
 
-    ("Gourmet - Maracujá", "Gourmet", 1.80, "Unidade"),
-    ("Gourmet - Limão", "Gourmet", 1.80, "Unidade"),
-    ("Gourmet - Creme Brulée", "Gourmet", 1.80, "Unidade"),
-    ("Gourmet - Prestígio", "Gourmet", 1.80, "Unidade"),
-    ("Gourmet - Olho de Sogra", "Gourmet", 1.80, "Unidade"),
-    ("Gourmet - Paçoca Especial", "Gourmet", 1.80, "Unidade"),
+    ("Premium - Maracujá", "Premium", 1.80, "Unidade"),
+    ("Premium - Limão", "Premium", 1.80, "Unidade"),
+    ("Premium - Creme Brulée", "Premium", 1.80, "Unidade"),
+    ("Premium - Prestígio", "Premium", 1.80, "Unidade"),
+    ("Premium - Olho de Sogra", "Premium", 1.80, "Unidade"),
+    ("Premium - Paçoca Especial", "Premium", 1.80, "Unidade"),
 
-    ("Queridinhos - Ferrero Rocher", "Queridinhos", 2.15, "Unidade"),
-    ("Queridinhos - Ninho com Nutella", "Queridinhos", 2.15, "Unidade"),
-    ("Queridinhos - Chocolate Branco", "Queridinhos", 2.15, "Unidade"),
-    ("Queridinhos - Romeu & Julieta", "Queridinhos", 2.15, "Unidade"),
-    ("Queridinhos - Surpresa de Uva", "Queridinhos", 2.15, "Unidade"),
-    ("Queridinhos - Caramelo Salgado", "Queridinhos", 2.15, "Unidade"),
+    ("Gourmet - Ferrero Rocher", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Ninho com Nutella", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Brigadeiro Branco", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Romeu & Julieta", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Surpresa de Uva", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Caramelo Salgado", "Gourmet", 2.15, "Unidade"),
+    ("Gourmet - Sensação", "Gourmet", 2.15, "Unidade"),
 
-    ("Especialidades - Confetti", "Especialidades", 2.50, "Unidade"),
-    ("Especialidades - Kinder Bueno", "Especialidades", 2.50, "Unidade"),
-    ("Especialidades - Mini Brownie", "Especialidades", 2.50, "Unidade"),
-    ("Especialidades - Surpresa de Uva", "Especialidades", 2.50, "Unidade")
+    ("Gourmet Especial - Confetti", "Gourmet Especial", 2.50, "Unidade"),
+    ("Gourmet Especial - Kinder Bueno", "Gourmet Especial", 2.50, "Unidade"),
+    ("Gourmet Especial - Mini Brownie", "Gourmet Especial", 2.50, "Unidade"),
+    ("Gourmet Especial - Surpresa de Uva", "Gourmet Especial", 2.50, "Unidade"),
+
+    ("Finos - Camafeu de Nozes", "Finos", 3.00, "Unidade"),
+    ("Finos - Copinho Recheado", "Finos", 3.00, "Unidade"),
+    ("Finos - Concha", "Finos", 3.00, "Unidade")
 ]
 
 
@@ -152,16 +158,46 @@ def inicializar_banco():
                 )
 
         # -------------------------------------------------
-        # CADASTRO AUTOMÁTICO DOS PRODUTOS INICIAIS
+        # CONTROLE DE ATUALIZAÇÃO DO CATÁLOGO
         # -------------------------------------------------
 
         cursor.execute("""
-            SELECT COUNT(*) FROM produtos
+            CREATE TABLE IF NOT EXISTS controle_migracoes (
+                chave TEXT PRIMARY KEY,
+                executada_em TEXT DEFAULT CURRENT_TIMESTAMP
+            )
         """)
 
-        quantidade_produtos = cursor.fetchone()[0]
+        chave_migracao = "catalogo_toque_de_amor_v2"
 
-        if quantidade_produtos == 0:
+        cursor.execute("""
+            SELECT chave
+            FROM controle_migracoes
+            WHERE chave = ?
+        """, (chave_migracao,))
+
+        migracao_realizada = cursor.fetchone()
+
+        if not migracao_realizada:
+
+            # Verificar se existem pedidos ou itens vinculados
+
+            cursor.execute("SELECT COUNT(*) FROM pedidos")
+            quantidade_pedidos = cursor.fetchone()[0]
+
+            cursor.execute("SELECT COUNT(*) FROM itens_pedido")
+            quantidade_itens = cursor.fetchone()[0]
+
+            if quantidade_pedidos > 0 or quantidade_itens > 0:
+
+                raise RuntimeError(
+                    "Atualização do catálogo interrompida: "
+                    "existem pedidos cadastrados no banco."
+                )
+
+            # Substituir o catálogo antigo
+
+            cursor.execute("DELETE FROM produtos")
 
             cursor.executemany("""
                 INSERT INTO produtos (
@@ -173,7 +209,24 @@ def inicializar_banco():
                 VALUES (?, ?, ?, ?)
             """, PRODUTOS_INICIAIS)
 
-            print("Produtos iniciais cadastrados com sucesso!")
+            # Registrar que a atualização já foi realizada
+
+            cursor.execute("""
+                INSERT INTO controle_migracoes (chave)
+                VALUES (?)
+            """, (chave_migracao,))
+
+            print("Catálogo atualizado com sucesso!")
+            print(
+                f"Total de produtos: {len(PRODUTOS_INICIAIS)}"
+            )
+
+        else:
+
+            # Caso seja a primeira inicialização de um banco
+            # com essa migração já registrada, não alterar nada.
+
+            print("Catálogo já está atualizado.")
 
         conexao.commit()
 
