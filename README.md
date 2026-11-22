@@ -71,3 +71,90 @@ App/
 
 ---
 
+## 💻 Como executar o projeto localmente
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/roberta-alencar92/toque-de-amor.git
+```
+
+### 2. Entre na pasta do projeto
+
+```bash
+cd toque-de-amor
+```
+
+### 3. Crie um ambiente virtual
+
+```bash
+python -m venv venv
+```
+
+### 4. Ative o ambiente virtual
+
+No Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 5. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Configure as variáveis de ambiente
+
+Antes de executar, configure uma chave secreta para a aplicação e as credenciais administrativas.
+
+Não compartilhe senhas ou chaves secretas no repositório.
+
+### 7. Execute a aplicação
+
+```bash
+python app.py
+```
+
+Acesse pelo navegador:
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+## 🌐 Hospedagem
+
+O sistema possui uma versão publicada na plataforma Render:
+
+**https://toque-de-amor.onrender.com**
+
+A disponibilidade e a persistência dos dados dependem das configurações do serviço de hospedagem.
+
+---
+
+## 🔒 Segurança e armazenamento
+
+- Senhas administrativas armazenadas utilizando hash.
+- Proteção CSRF nos formulários.
+- Credenciais e chaves secretas configuradas por variáveis de ambiente.
+- Arquivos de banco de dados e backups locais excluídos do controle de versão.
+
+**Importante:** a versão gratuita de hospedagem utiliza armazenamento efêmero. Antes de utilizar o sistema com dados reais da confeitaria, é necessário configurar uma solução de banco de dados persistente e validar a estratégia de backups.
+
+---
+
+## ❤️ Sobre o projeto
+
+O **Toque de Amor** é um projeto desenvolvido com dedicação, aprendizado e o propósito de transformar uma necessidade real em uma solução tecnológica.
+
+Mais do que um sistema de gestão, representa a aplicação prática de conhecimentos em desenvolvimento web, organização de dados e automação de processos.
+
+**Desenvolvimento:** Roberta Alencar  
+**Projeto:** Toque de Amor — Sistema de Gestão de Confeitaria
+
+---
+
+*Feito com dedicação, tecnologia e um toque de amor. 🍫❤️*
