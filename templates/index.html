@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Toque de Amor - Sistema de Pedidos</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fff7f8;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            padding: 35px 20px;
+            margin: 0;
+        }
+
+        .logo {
+            width: 280px;
+            max-width: 85%;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #873e59;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            margin-top: 5px;
+            margin-bottom: 35px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .botao {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 260px;
+            max-width: 100%;
+            height: 58px;
+            background-color: #d9a4aa;
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            transition: 0.2s;
+        }
+
+        .botao:hover {
+            background-color: #873e59;
+            transform: translateY(-2px);
+        }
+
+        .botao-sair {
+            margin-top: 12px;
+            background-color: transparent;
+            color: #873e59;
+            border: 1px solid #d9a4aa;
+            box-shadow: none;
+        }
+
+        .botao-sair:hover {
+            background-color: #873e59;
+            color: white;
+        }
+
+        footer {
+            margin-top: 55px;
+            color: #a77d87;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <img
+        src="{{ url_for('static', filename='Logo.png') }}"
+        alt="Logo Toque de Amor"
+        class="logo"
+    >
+
+    <h2>Sistema de Pedidos</h2>
+
+    <div class="menu">
+
+        <a href="{{ url_for('novo_pedido') }}" class="botao">
+            Novo Pedido
+        </a>
+
+        <a href="{{ url_for('produtos') }}" class="botao">
+            Produtos
+        </a>
+
+        <a href="{{ url_for('pedidos') }}" class="botao">
+            Histórico de Pedidos
+        </a>
+
+        <a href="{{ url_for('relatorios') }}" class="botao">
+            Relatórios
+        </a>
+
+        <a href="{{ url_for('sair') }}" class="botao botao-sair">
+            Sair do Sistema
+        </a>
+
+    </div>
+
+    <footer>
+        Toque de Amor - Confeitaria Gourmet
+    </footer>
+
+</body>
+</html>

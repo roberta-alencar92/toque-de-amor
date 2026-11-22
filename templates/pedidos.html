@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Histórico de Pedidos - Toque de Amor</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fff7f8;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            color: #55333e;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .topo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 210px;
+            max-width: 80%;
+        }
+
+        h1 {
+            color: #873e59;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        .pedido {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .pedido h2 {
+            color: #873e59;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 25px;
+            margin-top: 0;
+            border-bottom: 1px solid #f0dce1;
+            padding-bottom: 10px;
+        }
+
+        .informacoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 22px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .informacoes strong {
+            color: #873e59;
+        }
+
+        .titulo-itens {
+            color: #873e59;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tabela-itens {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .tabela-itens th {
+            background: #f8e9ed;
+            color: #873e59;
+            text-align: left;
+            padding: 11px 8px;
+        }
+
+        .tabela-itens td {
+            padding: 11px 8px;
+            border-bottom: 1px solid #f2e5e8;
+        }
+
+        .valores {
+            text-align: right;
+            line-height: 1.9;
+            font-size: 14px;
+        }
+
+        .valores strong {
+            color: #873e59;
+        }
+
+        .total {
+            font-size: 19px;
+            font-weight: 600;
+            color: #873e59;
+            border-top: 1px solid #f0dce1;
+            padding-top: 10px;
+            margin-top: 8px;
+        }
+
+        .acoes {
+            margin-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .botao-pdf {
+            display: inline-block;
+            background: #d9a4aa;
+            color: white;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .botao-pdf:hover {
+            background: #873e59;
+        }
+
+        .botao-excluir {
+            background: #873e59;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .botao-excluir:hover {
+            background: #632b40;
+        }
+
+        .vazio {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            text-align: center;
+            color: #a77d87;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 25px;
+            background: #d9a4aa;
+            color: white;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 9px;
+            font-weight: 600;
+        }
+
+        .voltar:hover {
+            background: #873e59;
+        }
+
+        @media (max-width: 600px) {
+            .pedido {
+                padding: 17px;
+            }
+
+            .tabela-itens {
+                font-size: 11px;
+            }
+
+            .tabela-itens th,
+            .tabela-itens td {
+                padding: 8px 5px;
+            }
+
+            .acoes {
+                justify-content: stretch;
+            }
+
+            .acoes a,
+            .acoes form,
+            .botao-excluir {
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topo">
+
+        <img
+            src="{{ url_for('static', filename='Logo.png') }}"
+            alt="Logo Toque de Amor"
+            class="logo"
+        >
+
+        <h1>Histórico de Pedidos</h1>
+
+    </div>
+
+
+    {% if pedidos %}
+
+        {% for pedido in pedidos %}
+
+            {% set dados = pedido["dados"] %}
+
+            <div class="pedido">
+
+                <h2>Pedido nº {{ dados["id"] }}</h2>
+
+                <div class="informacoes">
+
+                    <div>
+                        <strong>Cliente:</strong>
+                        {{ dados["cliente_nome"] }}
+                    </div>
+
+                    <div>
+                        <strong>Telefone:</strong>
+                        {{ dados["cliente_telefone"] or "Não informado" }}
+                    </div>
+
+                    <div>
+                        <strong>Data do pedido:</strong>
+                        {{ dados["data_pedido"] or "Não informada" }}
+                    </div>
+
+                    <div>
+                        <strong>Data de entrega:</strong>
+                        {{ dados["data_entrega"] or "Não informada" }}
+                    </div>
+
+                    <div>
+                        <strong>Entrega:</strong>
+                        {{ dados["tipo_entrega"] }}
+                    </div>
+
+                    <div>
+                        <strong>Forma de pagamento:</strong>
+                        {{ dados["forma_pagamento"] or "Não informada" }}
+                    </div>
+
+                    {% if dados["tipo_entrega"] == "Delivery" %}
+
+                        <div>
+                            <strong>Endereço:</strong>
+                            {{ dados["endereco"] or "Não informado" }}
+                        </div>
+
+                        <div>
+                            <strong>Município:</strong>
+                            {{ dados["municipio"] or "Não informado" }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="titulo-itens">
+                    Produtos do pedido
+                </div>
+
+                <table class="tabela-itens">
+
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Qtd.</th>
+                            <th>Valor unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in pedido["itens"] %}
+
+                            <tr>
+
+                                <td>{{ item["nome_produto"] }}</td>
+
+                                <td>{{ item["quantidade"] }}</td>
+
+                                <td>
+                                    R$ {{ "%.2f"|format(item["preco_unitario_centavos"] / 100) }}
+                                </td>
+
+                                <td>
+                                    R$ {{ "%.2f"|format(item["subtotal_centavos"] / 100) }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+
+                <div class="valores">
+
+                    <div>
+                        Frete:
+                        <strong>
+                            R$ {{ "%.2f"|format(dados["valor_frete_centavos"] / 100) }}
+                        </strong>
+                    </div>
+
+                    <div class="total">
+                        Total do pedido:
+                        R$ {{ "%.2f"|format(dados["valor_total_centavos"] / 100) }}
+                    </div>
+
+                </div>
+
+
+                <div class="acoes">
+
+                    <a
+                        href="{{ url_for('gerar_pdf_pedido', id=dados['id']) }}"
+                        class="botao-pdf"
+                    >
+                        Gerar PDF
+                    </a>
+
+              <form
+    method="POST"
+    action="{{ url_for('excluir_pedido', id=dados['id']) }}"
+    onsubmit="return confirm('Tem certeza de que deseja excluir este pedido? Esta ação não poderá ser desfeita.');"
+>
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <button type="submit" class="botao-excluir">
+        Excluir Pedido
+    </button>
+
+</form>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="vazio">
+            <h2>Nenhum pedido cadastrado.</h2>
+            <p>Os pedidos registrados aparecerão aqui.</p>
+        </div>
+
+    {% endif %}
+
+
+    <div style="text-align: center;">
+
+        <a href="{{ url_for('inicio') }}" class="voltar">
+            Voltar ao início
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

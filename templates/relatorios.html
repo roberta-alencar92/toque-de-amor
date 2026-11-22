@@ -1,0 +1,698 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Relatórios | Toque de Amor</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 35px 20px;
+            background-color: #fff7f8;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: #44343a;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .cabecalho {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            width: 220px;
+            max-width: 80%;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-weight: normal;
+            color: #873e59;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin: 12px 0 5px;
+        }
+
+        .subtitulo {
+            font-size: 12px;
+            color: #927b83;
+        }
+
+        .secao-titulo {
+            font-size: 27px;
+            margin: 35px 0 15px;
+        }
+
+        .filtro {
+            background: #ffffff;
+            border: 1px solid #f0dce2;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .filtro h2 {
+            font-size: 24px;
+            margin: 0 0 18px;
+        }
+
+        .campos-filtro {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 15px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        label {
+            font-size: 11px;
+            color: #873e59;
+            font-weight: bold;
+        }
+
+        input[type="date"] {
+            padding: 11px;
+            border: 1px solid #ead4dc;
+            border-radius: 6px;
+            font-family: inherit;
+            color: #44343a;
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 6px;
+            background: #d9a4aa;
+            color: white;
+            font-family: inherit;
+            font-size: 11px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .botao:hover {
+            background: #873e59;
+        }
+
+        .botao-secundario {
+            background: #f3e4e9;
+            color: #873e59;
+        }
+
+        .botao-secundario:hover {
+            background: #ead1da;
+            color: #873e59;
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .cartao {
+            background: #ffffff;
+            border: 1px solid #f0dce2;
+            border-radius: 12px;
+            padding: 23px 18px;
+            box-shadow: 0 4px 15px rgba(135, 62, 89, 0.04);
+        }
+
+        .cartao-label {
+            font-size: 10px;
+            color: #927b83;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cartao-valor {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 32px;
+            color: #873e59;
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .cartao-descricao {
+            font-size: 10px;
+            color: #a58e96;
+            margin-top: 5px;
+        }
+
+        .tabela-container {
+            background: #ffffff;
+            border: 1px solid #f0dce2;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .grafico-area {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            background: #873e59;
+            color: #ffffff;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: normal;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f3e4e9;
+        }
+
+        tr:nth-child(even) td {
+            background: #fff7f8;
+        }
+
+        .vazio {
+            text-align: center;
+            padding: 28px;
+            color: #927b83;
+            font-size: 12px;
+        }
+
+        .rodape {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 10px;
+            color: #a58e96;
+        }
+
+        .voltar {
+            display: block;
+            width: fit-content;
+            margin: 25px auto 0;
+            color: #873e59;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .voltar:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 850px) {
+            .indicadores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .indicadores {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 35px;
+            }
+
+            .campos-filtro {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .campo {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="cabecalho">
+
+        <img
+            src="{{ url_for('static', filename='Logo.png') }}"
+            alt="Toque de Amor"
+            class="logo"
+        >
+
+        <h1>Relatórios</h1>
+
+        <div class="subtitulo">
+            Acompanhamento e análise dos resultados
+        </div>
+
+    </header>
+
+
+    <!-- FILTRO DE PERÍODO -->
+
+    <section class="filtro">
+
+        <h2>Período de consulta</h2>
+
+        <form method="GET" action="{{ url_for('relatorios') }}">
+
+            <div class="campos-filtro">
+
+                <div class="campo">
+                    <label for="data_inicio">Data inicial</label>
+
+                    <input
+                        type="date"
+                        id="data_inicio"
+                        name="data_inicio"
+                        value="{{ data_inicio }}"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="data_fim">Data final</label>
+
+                    <input
+                        type="date"
+                        id="data_fim"
+                        name="data_fim"
+                        value="{{ data_fim }}"
+                    >
+                </div>
+
+                <button type="submit" class="botao">
+                    Aplicar filtro
+                </button>
+
+                <a
+                    href="{{ url_for('relatorios') }}"
+                    class="botao botao-secundario"
+                >
+                    Limpar
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- INDICADORES -->
+
+    <h2 class="secao-titulo">Resumo do negócio</h2>
+
+    {% macro moeda(valor) %}
+        {% set formatado = "R$ {:,.2f}".format(valor / 100) %}
+        {{ formatado.replace(",", "X").replace(".", ",").replace("X", ".") }}
+    {% endmacro %}
+
+    <section class="indicadores">
+
+        <div class="cartao">
+
+            <div class="cartao-label">
+                Total de pedidos
+            </div>
+
+            <div class="cartao-valor">
+                {{ indicadores["total_pedidos"] }}
+            </div>
+
+            <div class="cartao-descricao">
+                Encomendas registradas
+            </div>
+
+        </div>
+
+
+        <div class="cartao">
+
+            <div class="cartao-label">
+                Faturamento
+            </div>
+
+            <div class="cartao-valor">
+                {{ moeda(indicadores["faturamento"]) }}
+            </div>
+
+            <div class="cartao-descricao">
+                Valor total dos pedidos
+            </div>
+
+        </div>
+
+
+        <div class="cartao">
+
+            <div class="cartao-label">
+                Ticket médio
+            </div>
+
+            <div class="cartao-valor">
+                {{ moeda(indicadores["ticket_medio"] | int) }}
+            </div>
+
+            <div class="cartao-descricao">
+                Média de valor por pedido
+            </div>
+
+        </div>
+
+
+        <div class="cartao">
+
+            <div class="cartao-label">
+                Produtos comercializados
+            </div>
+
+            <div class="cartao-valor">
+                {{ produtos_mais_vendidos | sum(attribute='quantidade_vendida') }}
+            </div>
+
+            <div class="cartao-descricao">
+                Unidades dos cinco produtos destacados
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EVOLUÇÃO MENSAL -->
+
+    <h2 class="secao-titulo">
+        Evolução mensal
+    </h2>
+
+    <section class="tabela-container">
+
+        {% if faturamento_mensal %}
+
+        <div class="grafico-area">
+            <canvas id="graficoFaturamento"></canvas>
+        </div>
+
+        {% else %}
+
+        <div class="vazio">
+            Ainda não existem dados suficientes para exibir a evolução mensal.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- PRODUTOS MAIS VENDIDOS -->
+
+    <h2 class="secao-titulo">
+        Produtos mais vendidos
+    </h2>
+
+    <section class="tabela-container">
+
+        {% if produtos_mais_vendidos %}
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade vendida</th>
+                    <th>Faturamento</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for produto in produtos_mais_vendidos %}
+
+                <tr>
+                    <td>{{ produto["nome_produto"] }}</td>
+
+                    <td>
+                        {{ produto["quantidade_vendida"] }}
+                    </td>
+
+                    <td>
+                        {{ moeda(produto["faturamento_produto"]) }}
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="vazio">
+            Ainda não existem vendas registradas neste período.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <a href="{{ url_for('inicio') }}" class="voltar">
+        Voltar ao início
+    </a>
+
+
+    <footer class="rodape">
+        Toque de Amor - Carinho em cada detalhe!
+    </footer>
+
+</div>
+
+
+<!-- DADOS DO GRÁFICO -->
+
+{% if faturamento_mensal %}
+
+<div
+    id="dadosGrafico"
+    data-mensal='[{% for item in faturamento_mensal %}{"mes":"{{ item["mes"] }}","faturamento":{{ item["faturamento"] }},"total_pedidos":{{ item["total_pedidos"] }}}{% if not loop.last %},{% endif %}{% endfor %}]'
+></div>
+
+{% endif %}
+
+
+<!-- BIBLIOTECA DO GRÁFICO -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- CONFIGURAÇÃO DO GRÁFICO -->
+
+{% if faturamento_mensal %}
+
+<script>
+
+    const elementoDados = document.getElementById("dadosGrafico");
+
+    const dadosMensais = JSON.parse(
+        elementoDados.dataset.mensal
+    );
+
+    const meses = dadosMensais.map(item => {
+
+        const [ano, mes] = item.mes.split("-");
+
+        return `${mes}/${ano}`;
+
+    });
+
+    const faturamentos = dadosMensais.map(item =>
+        item.faturamento / 100
+    );
+
+    const quantidadePedidos = dadosMensais.map(item =>
+        item.total_pedidos
+    );
+
+    const contexto = document
+        .getElementById("graficoFaturamento")
+        .getContext("2d");
+
+
+    new Chart(contexto, {
+
+        type: "line",
+
+        data: {
+
+            labels: meses,
+
+            datasets: [
+
+                {
+                    label: "Faturamento (R$)",
+
+                    data: faturamentos,
+
+                    borderColor: "#873e59",
+                    backgroundColor: "rgba(135, 62, 89, 0.10)",
+
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true,
+
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: "#873e59",
+
+                    yAxisID: "y"
+                },
+
+                {
+                    label: "Quantidade de pedidos",
+
+                    data: quantidadePedidos,
+
+                    borderColor: "#d9a4aa",
+                    backgroundColor: "#d9a4aa",
+
+                    borderWidth: 2,
+                    tension: 0.35,
+
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+
+                    yAxisID: "y1"
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+            maintainAspectRatio: false,
+
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+
+            plugins: {
+
+                legend: {
+                    position: "bottom"
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            if (context.datasetIndex === 0) {
+
+                                return "Faturamento: " +
+                                    context.parsed.y.toLocaleString(
+                                        "pt-BR",
+                                        {
+                                            style: "currency",
+                                            currency: "BRL"
+                                        }
+                                    );
+
+                            }
+
+                            return "Pedidos: " + context.parsed.y;
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+                    position: "left",
+
+                    title: {
+                        display: true,
+                        text: "Faturamento (R$)"
+                    },
+
+                    ticks: {
+
+                        callback: function(valor) {
+
+                            return "R$ " +
+                                valor.toLocaleString("pt-BR");
+
+                        }
+
+                    }
+
+                },
+
+                y1: {
+
+                    beginAtZero: true,
+                    position: "right",
+
+                    grid: {
+                        drawOnChartArea: false
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Pedidos"
+                    },
+
+                    ticks: {
+                        precision: 0
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
+{% endif %}
+
+</body>
+</html>

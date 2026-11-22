@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Pedido | Toque de Amor</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            background: #fff7f8;
+            font-family: 'Montserrat', sans-serif;
+            color: #51363f;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 4px 18px rgba(100, 50, 65, 0.08);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 38px;
+            text-align: center;
+            color: #873e59;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 25px;
+            color: #873e59;
+            border-bottom: 1px solid #ead5dc;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+
+        .campo {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #e3cbd3;
+            border-radius: 7px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #51363f;
+        }
+
+        .linha {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .linha-produto {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            align-items: end;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff9fa;
+            border: 1px solid #f0dfe4;
+            border-radius: 9px;
+        }
+
+        .subtotal-geral {
+            max-width: 300px;
+            margin: 20px 0 10px auto;
+        }
+
+        .subtotal-geral input {
+            font-weight: 600;
+            color: #873e59;
+            background: #fff7f8;
+        }
+
+        #valor_final {
+            font-size: 20px;
+            font-weight: 700;
+            color: #873e59;
+            background: #fff7f8;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button, .voltar {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 7px;
+            background: #873e59;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .voltar {
+            background: #ead5dc;
+            color: #51363f;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 22px;
+            }
+
+            .linha,
+            .linha-produto {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Novo Pedido</h1>
+
+    <form method="POST" action="#">
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+        <h2>Dados do Cliente</h2>
+
+        <div class="campo">
+            <label for="cliente_nome">Nome do cliente</label>
+            <input type="text" id="cliente_nome" name="cliente_nome" required>
+        </div>
+
+        <div class="campo">
+            <label for="cliente_telefone">Telefone</label>
+            <input type="tel" id="cliente_telefone" name="cliente_telefone" required>
+        </div>
+
+        <div class="linha">
+
+            <div class="campo">
+                <label for="data_pedido">Data do pedido</label>
+                <input type="date" id="data_pedido" name="data_pedido" required>
+            </div>
+
+            <div class="campo">
+                <label for="data_entrega">Data para entrega</label>
+                <input type="date" id="data_entrega" name="data_entrega" required>
+            </div>
+
+        </div>
+
+        <h2>Entrega ou Retirada</h2>
+
+        <div class="campo">
+
+            <label for="tipo_entrega">Como o cliente receberá o pedido?</label>
+
+            <select id="tipo_entrega" name="tipo_entrega" required>
+                <option value="">Selecione</option>
+                <option value="Retirada">Retirada</option>
+                <option value="Delivery">Delivery</option>
+            </select>
+
+        </div>
+
+        <div id="campos_delivery" style="display: none;">
+
+            <div class="campo">
+                <label for="endereco">Endereço completo</label>
+                <input type="text" id="endereco" name="endereco">
+            </div>
+
+            <div class="campo">
+                <label for="municipio">Município</label>
+                <input type="text" id="municipio" name="municipio">
+            </div>
+
+            <div class="campo">
+                <label for="valor_frete">Valor do frete (R$)</label>
+
+                <input type="number"
+                       id="valor_frete"
+                       name="valor_frete"
+                       min="0"
+                       step="0.01"
+                       value="0">
+            </div>
+
+        </div>
+
+        <h2>Pagamento</h2>
+
+        <div class="campo">
+
+            <label for="forma_pagamento">Forma de pagamento</label>
+
+            <select id="forma_pagamento" name="forma_pagamento" required>
+                <option value="">Selecione</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Pix">Pix</option>
+                <option value="Cartão de débito">Cartão de débito</option>
+                <option value="Cartão de crédito">Cartão de crédito</option>
+            </select>
+
+        </div>
+
+        <h2>Produtos do Pedido</h2>
+
+        <div id="lista_produtos">
+
+            <div class="linha-produto">
+
+                <div class="campo">
+                    <label>Produto</label>
+
+                    <select name="produto_id[]" class="produto-select" required>
+                        <option value="">Selecione um produto</option>
+
+                        {% for produto in produtos %}
+                        <option value="{{ produto['id'] }}"
+                                data-preco="{{ produto['preco'] }}">
+                            {{ produto['nome'] }} — R$ {{ "%.2f"|format(produto['preco']) }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label>Quantidade</label>
+
+                    <input type="number"
+                           name="quantidade[]"
+                           class="quantidade"
+                           min="1"
+                           value="1"
+                           required>
+                </div>
+
+                <div class="campo">
+                    <label>Subtotal</label>
+
+                    <input type="text"
+                           class="subtotal-item"
+                           value="R$ 0,00"
+                           readonly>
+                </div>
+
+            </div>
+
+        </div>
+
+        <button type="button" onclick="adicionarProduto()">
+            + Adicionar outro produto
+        </button>
+
+        <div class="campo subtotal-geral">
+
+            <label>Subtotal geral dos produtos</label>
+
+            <input type="text"
+                   id="subtotal_produtos"
+                   value="R$ 0,00"
+                   readonly>
+
+        </div>
+
+        <h2>Valor Final</h2>
+
+        <div class="campo subtotal-geral">
+
+            <label>Valor final do pedido</label>
+
+            <input type="text"
+                   id="valor_final"
+                   value="R$ 0,00"
+                   readonly>
+
+        </div>
+
+        <div class="botoes">
+
+            <button type="submit">Salvar Pedido</button>
+
+            <a href="/" class="voltar">Voltar</a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+
+    // Controle de Retirada e Delivery
+
+    const tipoEntrega = document.getElementById("tipo_entrega");
+    const camposDelivery = document.getElementById("campos_delivery");
+
+    tipoEntrega.addEventListener("change", function() {
+
+        if (this.value === "Delivery") {
+            camposDelivery.style.display = "block";
+        } else {
+            camposDelivery.style.display = "none";
+
+            document.getElementById("valor_frete").value = "0";
+        }
+
+        calcularTotais();
+
+    });
+
+
+    // Adicionar novos produtos
+
+    function adicionarProduto() {
+
+        const lista = document.getElementById("lista_produtos");
+
+        const primeiraLinha = lista.querySelector(".linha-produto");
+
+        const novaLinha = primeiraLinha.cloneNode(true);
+
+        novaLinha.querySelector(".produto-select").value = "";
+        novaLinha.querySelector(".quantidade").value = 1;
+        novaLinha.querySelector(".subtotal-item").value = "R$ 0,00";
+
+        lista.appendChild(novaLinha);
+
+        calcularTotais();
+
+    }
+
+
+    // Calcular subtotais e valor final
+
+    function calcularTotais() {
+
+        const lista = document.getElementById("lista_produtos");
+        const linhas = lista.querySelectorAll(".linha-produto");
+
+        let total = 0;
+
+        linhas.forEach(function(linha) {
+
+            const select = linha.querySelector(".produto-select");
+            const quantidade = linha.querySelector(".quantidade");
+            const subtotalCampo = linha.querySelector(".subtotal-item");
+
+            const opcao = select.options[select.selectedIndex];
+
+            const preco = Number(opcao.dataset.preco || 0);
+            const qtd = Number(quantidade.value || 0);
+
+            const subtotal = preco * qtd;
+
+            subtotalCampo.value = subtotal.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+
+            total += subtotal;
+
+        });
+
+        // Subtotal geral dos produtos
+
+        document.getElementById("subtotal_produtos").value =
+            total.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+
+
+        // Valor do frete
+
+        let valorFrete = 0;
+
+        if (tipoEntrega.value === "Delivery") {
+
+            valorFrete = Number(
+                document.getElementById("valor_frete").value || 0
+            );
+
+        }
+
+
+        // Valor final
+
+        const valorFinal = total + valorFrete;
+
+        document.getElementById("valor_final").value =
+            valorFinal.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+
+    }
+
+
+    // Atualizar cálculos ao selecionar produtos ou alterar quantidades
+
+    document.getElementById("lista_produtos").addEventListener("change", function(event) {
+
+        if (
+            event.target.classList.contains("produto-select") ||
+            event.target.classList.contains("quantidade")
+        ) {
+            calcularTotais();
+        }
+
+    });
+
+
+    document.getElementById("lista_produtos").addEventListener("input", function(event) {
+
+        if (event.target.classList.contains("quantidade")) {
+            calcularTotais();
+        }
+
+    });
+
+
+    // Atualizar valor final quando o frete mudar
+
+    document.getElementById("valor_frete").addEventListener("input", function() {
+
+        calcularTotais();
+
+    });
+
+
+</script>
+
+</body>
+</html>
